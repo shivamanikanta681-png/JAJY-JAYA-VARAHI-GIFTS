@@ -63,7 +63,7 @@ const modalCloseBtn = document.getElementById('modal-close-btn');
 const modalBodyContent = document.getElementById('modal-body-content');
 
 // ==========================================
-// 1. Particle Canvas System
+// 1. Liquid Physics & Viscous Blob Canvas
 // ==========================================
 function initParticles() {
     const canvas = document.getElementById('particle-canvas');
@@ -72,7 +72,7 @@ function initParticles() {
     let particlesArray = [];
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
-    const mouse = { x: null, y: null, radius: 100 };
+    const mouse = { x: width / 2, y: height / 2, radius: 180 };
 
     window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
     window.addEventListener('resize', () => {
@@ -80,47 +80,59 @@ function initParticles() {
         height = canvas.height = window.innerHeight;
     });
 
-    class Particle {
+    class LiquidBlob {
         constructor() {
             this.x = Math.random() * width;
             this.y = Math.random() * height;
-            this.size = Math.random() * 2 + 0.5;
-            this.speedX = Math.random() * 0.3 - 0.15;
-            this.speedY = Math.random() * 0.3 - 0.15;
-            this.color = Math.random() > 0.6 ? 'rgba(255, 179, 0, 0.4)' : 'rgba(255, 85, 0, 0.3)';
+            this.radius = Math.random() * 40 + 20;
+            this.vx = (Math.random() - 0.5) * 0.4;
+            this.vy = (Math.random() - 0.5) * 0.4;
+            this.hueOffset = Math.random() * 20;
         }
+
         update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.x < 0 || this.x > width) this.speedX *= -1;
-            if (this.y < 0 || this.y > height) this.speedY *= -1;
+            this.x += this.vx;
+            this.y += this.vy;
+
+            if (this.x < -50 || this.x > width + 50) this.vx *= -1;
+            if (this.y < -50 || this.y > height + 50) this.vy *= -1;
+
             if (mouse.x && mouse.y) {
                 let dx = mouse.x - this.x;
                 let dy = mouse.y - this.y;
                 let dist = Math.sqrt(dx * dx + dy * dy);
                 if (dist < mouse.radius) {
-                    let f = (mouse.radius - dist) / mouse.radius;
-                    this.x -= (dx / dist) * f * 1.2;
-                    this.y -= (dy / dist) * f * 1.2;
+                    let force = (mouse.radius - dist) / mouse.radius;
+                    this.x -= (dx / dist) * force * 1.5;
+                    this.y -= (dy / dist) * force * 1.5;
                 }
             }
         }
+
         draw() {
-            ctx.fillStyle = this.color;
+            const style = getComputedStyle(document.documentElement);
+            const hue = parseFloat(style.getPropertyValue('--hue-primary')) || 38;
+            
+            const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+            grad.addColorStop(0, `hsla(${hue + this.hueOffset}, 90%, 60%, 0.15)`);
+            grad.addColorStop(0.6, `hsla(${hue + this.hueOffset}, 80%, 50%, 0.05)`);
+            grad.addColorStop(1, 'transparent');
+
+            ctx.fillStyle = grad;
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
             ctx.fill();
         }
     }
 
     function populate() {
         particlesArray = [];
-        const count = Math.floor((width * height) / 12000);
-        for (let i = 0; i < count; i++) particlesArray.push(new Particle());
+        const count = Math.floor((width * height) / 25000) + 12;
+        for (let i = 0; i < count; i++) particlesArray.push(new LiquidBlob());
     }
+
     function animate() {
-        ctx.fillStyle = 'rgba(9, 9, 14, 0.15)';
-        ctx.fillRect(0, 0, width, height);
+        ctx.clearRect(0, 0, width, height);
         particlesArray.forEach(p => { p.update(); p.draw(); });
         requestAnimationFrame(animate);
     }
@@ -527,12 +539,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         setTimeout(() => { portalScreen.style.display = 'none'; }, 1200);
     });
 
-    // Category filters
+    // Category filters with Generative UI Adaptation
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            renderCatalog(btn.getAttribute('data-category'), searchInput.value);
+            const category = btn.getAttribute('data-category');
+            if (category === 'all') {
+                document.body.removeAttribute('data-theme');
+            } else {
+                document.body.setAttribute('data-theme', category);
+            }
+            renderCatalog(category, searchInput.value);
         });
     });
 
