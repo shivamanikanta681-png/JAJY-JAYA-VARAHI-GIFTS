@@ -1,7 +1,58 @@
 // ==========================================================
 // JAJY JAYA VARAHI TOYS, KITCHEN WARE & RETURN GIFTS
-// Flask Backend Edition — All data via REST API
+// Hybrid Store Manager (Flask REST API + Vercel / LocalStorage Fallback)
 // ==========================================================
+
+const DEFAULT_PRODUCTS = [
+    {
+        id: 'toy-1',
+        name: 'Glow-in-the-Dark Action Robot',
+        category: 'toys',
+        price: 499,
+        pic: 'https://images.unsplash.com/photo-1531061836765-1590123a7b93?auto=format&fit=crop&q=80&w=400',
+        comment: 'Interactive toy with movable joints and laser sound effects.'
+    },
+    {
+        id: 'kitchen-1',
+        name: 'Non-stick Premium Pan Set',
+        category: 'kitchenware',
+        price: 1899,
+        pic: 'https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?auto=format&fit=crop&q=80&w=400',
+        comment: '3-piece durable granite coated cookware with induction base.'
+    },
+    {
+        id: 'gift-1',
+        name: 'Handcrafted Wooden Jewelry Box',
+        category: 'return-gifts',
+        price: 250,
+        pic: 'https://images.unsplash.com/photo-1582139329536-e7284fece509?auto=format&fit=crop&q=80&w=400',
+        comment: 'Exquisite carving, ideal return gift for weddings and festivals.'
+    },
+    {
+        id: 'toy-2',
+        name: 'Magnetic Building Blocks (72 Pcs)',
+        category: 'toys',
+        price: 999,
+        pic: 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&q=80&w=400',
+        comment: 'Educational STEAM toy for kids aged 3 and above.'
+    },
+    {
+        id: 'kitchen-2',
+        name: 'Glass Spice Jar Set (12 Jars)',
+        category: 'kitchenware',
+        price: 650,
+        pic: 'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?auto=format&fit=crop&q=80&w=400',
+        comment: 'Aesthetic air-tight wooden lids with personalized labels.'
+    },
+    {
+        id: 'gift-2',
+        name: 'Silver-plated Puja Thali',
+        category: 'return-gifts',
+        price: 380,
+        pic: 'https://images.unsplash.com/photo-1609252918804-9544c771f28b?auto=format&fit=crop&q=80&w=400',
+        comment: 'Intricate designs, includes tiny diya holder and agarbatti stand.'
+    }
+];
 
 let products = [];
 let cart = [];
@@ -63,7 +114,7 @@ const modalCloseBtn = document.getElementById('modal-close-btn');
 const modalBodyContent = document.getElementById('modal-body-content');
 
 // ==========================================
-// 1. Liquid Physics & Viscous Blob Canvas
+// 1. Particle Canvas System
 // ==========================================
 function initParticles() {
     const canvas = document.getElementById('particle-canvas');
@@ -72,7 +123,7 @@ function initParticles() {
     let particlesArray = [];
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
-    const mouse = { x: width / 2, y: height / 2, radius: 180 };
+    const mouse = { x: null, y: null, radius: 100 };
 
     window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
     window.addEventListener('resize', () => {
@@ -80,59 +131,47 @@ function initParticles() {
         height = canvas.height = window.innerHeight;
     });
 
-    class LiquidBlob {
+    class Particle {
         constructor() {
             this.x = Math.random() * width;
             this.y = Math.random() * height;
-            this.radius = Math.random() * 40 + 20;
-            this.vx = (Math.random() - 0.5) * 0.4;
-            this.vy = (Math.random() - 0.5) * 0.4;
-            this.hueOffset = Math.random() * 20;
+            this.size = Math.random() * 2 + 0.5;
+            this.speedX = Math.random() * 0.3 - 0.15;
+            this.speedY = Math.random() * 0.3 - 0.15;
+            this.color = Math.random() > 0.6 ? 'rgba(255, 179, 0, 0.4)' : 'rgba(255, 85, 0, 0.3)';
         }
-
         update() {
-            this.x += this.vx;
-            this.y += this.vy;
-
-            if (this.x < -50 || this.x > width + 50) this.vx *= -1;
-            if (this.y < -50 || this.y > height + 50) this.vy *= -1;
-
+            this.x += this.speedX;
+            this.y += this.speedY;
+            if (this.x < 0 || this.x > width) this.speedX *= -1;
+            if (this.y < 0 || this.y > height) this.speedY *= -1;
             if (mouse.x && mouse.y) {
                 let dx = mouse.x - this.x;
                 let dy = mouse.y - this.y;
                 let dist = Math.sqrt(dx * dx + dy * dy);
                 if (dist < mouse.radius) {
-                    let force = (mouse.radius - dist) / mouse.radius;
-                    this.x -= (dx / dist) * force * 1.5;
-                    this.y -= (dy / dist) * force * 1.5;
+                    let f = (mouse.radius - dist) / mouse.radius;
+                    this.x -= (dx / dist) * f * 1.2;
+                    this.y -= (dy / dist) * f * 1.2;
                 }
             }
         }
-
         draw() {
-            const style = getComputedStyle(document.documentElement);
-            const hue = parseFloat(style.getPropertyValue('--hue-primary')) || 38;
-            
-            const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
-            grad.addColorStop(0, `hsla(${hue + this.hueOffset}, 90%, 60%, 0.15)`);
-            grad.addColorStop(0.6, `hsla(${hue + this.hueOffset}, 80%, 50%, 0.05)`);
-            grad.addColorStop(1, 'transparent');
-
-            ctx.fillStyle = grad;
+            ctx.fillStyle = this.color;
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             ctx.fill();
         }
     }
 
     function populate() {
         particlesArray = [];
-        const count = Math.floor((width * height) / 25000) + 12;
-        for (let i = 0; i < count; i++) particlesArray.push(new LiquidBlob());
+        const count = Math.floor((width * height) / 12000);
+        for (let i = 0; i < count; i++) particlesArray.push(new Particle());
     }
-
     function animate() {
-        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = 'rgba(9, 9, 14, 0.15)';
+        ctx.fillRect(0, 0, width, height);
         particlesArray.forEach(p => { p.update(); p.draw(); });
         requestAnimationFrame(animate);
     }
@@ -141,51 +180,45 @@ function initParticles() {
 }
 
 // ==========================================
-// 2. Flask API Helpers
-// ==========================================
-async function apiGet(url) {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`GET ${url} failed: ${res.status}`);
-    return res.json();
-}
-
-async function apiPost(url, body) {
-    const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-    });
-    return res.json();
-}
-
-async function apiDelete(url) {
-    const res = await fetch(url, { method: 'DELETE' });
-    return res.json();
-}
-
-// ==========================================
-// 3. Load Products & Settings from Flask
+// 2. Load Products & Settings (Flask API + LocalStorage Fallback)
 // ==========================================
 async function loadStoreData() {
     try {
-        // Load products
-        products = await apiGet('/api/products');
+        const res = await fetch('/api/products');
+        if (!res.ok) throw new Error('API route not available');
+        products = await res.json();
 
-        // Load settings
-        const settings = await apiGet('/api/settings');
-        discountRate = parseInt(settings.discount_rate || 0);
-        discountBannerMsg = settings.discount_banner || '';
-
-        // Sync UI
-        if (storeDiscountRate) storeDiscountRate.value = discountRate;
-        if (discountRateVal) discountRateVal.textContent = `${discountRate}% OFF`;
-        if (storeDiscountBanner) storeDiscountBanner.value = discountBannerMsg;
-
-        updatePromoBanner();
-        renderCatalog();
+        const sRes = await fetch('/api/settings');
+        if (sRes.ok) {
+            const settings = await sRes.json();
+            discountRate = parseInt(settings.discount_rate || 0);
+            discountBannerMsg = settings.discount_banner || '';
+        }
     } catch (err) {
-        console.error('Failed to load store data:', err);
+        // Fallback for Vercel / Static mode
+        const localProds = localStorage.getItem('jajy_products');
+        if (localProds) {
+            products = JSON.parse(localProds);
+        } else {
+            products = [...DEFAULT_PRODUCTS];
+            localStorage.setItem('jajy_products', JSON.stringify(products));
+        }
+
+        const storedRate = localStorage.getItem('jajy_discount_rate');
+        discountRate = storedRate ? parseInt(storedRate) : 0;
+        discountBannerMsg = localStorage.getItem('jajy_discount_banner') || '';
     }
+
+    if (storeDiscountRate) storeDiscountRate.value = discountRate;
+    if (discountRateVal) discountRateVal.textContent = `${discountRate}% OFF`;
+    if (storeDiscountBanner) storeDiscountBanner.value = discountBannerMsg;
+
+    updatePromoBanner();
+    renderCatalog();
+}
+
+function saveLocalProducts() {
+    localStorage.setItem('jajy_products', JSON.stringify(products));
 }
 
 function updatePromoBanner() {
@@ -199,7 +232,7 @@ function updatePromoBanner() {
 }
 
 // ==========================================
-// 4. Render Storefront Products
+// 3. Render Storefront Products
 // ==========================================
 function renderCatalog(filteredCategory = 'all', searchQuery = '') {
     productsContainer.innerHTML = '';
@@ -240,7 +273,7 @@ function renderCatalog(filteredCategory = 'all', searchQuery = '') {
             ${isAdmin ? `<div class="delete-product-overlay" data-id="${prod.id}" title="Remove Item"><i class="fa-solid fa-trash"></i></div>` : ''}
             <div class="product-image-container">
                 ${prod.pic
-                    ? `<img src="${prod.pic}" alt="${prod.name}" onerror="this.style.display='none'">`
+                    ? `<img src="${prod.pic}" alt="${prod.name}" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid fa-box-open product-image-placeholder\\'></i>'">`
                     : `<i class="fa-solid fa-box-open product-image-placeholder"></i>`}
             </div>
             <span class="product-tag">${prod.category.replace('-', ' ')}</span>
@@ -294,13 +327,16 @@ function renderCatalog(filteredCategory = 'all', searchQuery = '') {
                 e.stopPropagation();
                 const id = btn.getAttribute('data-id');
                 if (!confirm('Remove this product from the store?')) return;
+                
                 try {
-                    await apiDelete(`/api/products/${id}`);
-                    products = products.filter(p => p.id !== id);
-                    renderCatalog(getActiveCategory(), searchInput.value);
+                    await fetch(`/api/products/${id}`, { method: 'DELETE' });
                 } catch (err) {
-                    alert('Failed to delete product.');
+                    console.log('Using local delete fallback');
                 }
+                
+                products = products.filter(p => p.id !== id);
+                saveLocalProducts();
+                renderCatalog(getActiveCategory(), searchInput.value);
             });
         });
     }
@@ -312,7 +348,7 @@ function getActiveCategory() {
 }
 
 // ==========================================
-// 5. Cart Management
+// 4. Cart Management
 // ==========================================
 function addToCart(product) {
     const existing = cart.find(item => item.id === product.id);
@@ -377,7 +413,7 @@ function updateCartUI() {
 }
 
 // ==========================================
-// 6. Product Detail Modal
+// 5. Product Detail Modal
 // ==========================================
 function openProductDetailModal(prod) {
     const originalPrice = prod.price;
@@ -413,15 +449,31 @@ function openProductDetailModal(prod) {
 }
 
 // ==========================================
-// 7. Admin Console
+// 6. Admin Console
 // ==========================================
 function setupAdminConsole() {
     // Auth submit
     submitAuthBtn.addEventListener('click', async () => {
-        const code = adminPasscode.value;
+        const code = adminPasscode.value.trim();
+        
+        // Direct Passcode Check (Works on Vercel static & Flask)
+        if (code === 'admin123') {
+            isAdmin = true;
+            adminAuthSection.style.display = 'none';
+            adminControlsSection.style.display = 'block';
+            adminPasscode.value = '';
+            renderCatalog(getActiveCategory(), searchInput.value);
+            return;
+        }
+
         try {
-            const result = await apiPost('/api/auth', { passcode: code });
-            if (result.success) {
+            const res = await fetch('/api/auth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ passcode: code })
+            });
+            const result = await res.json();
+            if (result && result.success) {
                 isAdmin = true;
                 adminAuthSection.style.display = 'none';
                 adminControlsSection.style.display = 'block';
@@ -431,7 +483,7 @@ function setupAdminConsole() {
                 alert('❌ Incorrect access code. Try again.');
             }
         } catch {
-            alert('❌ Authentication failed.');
+            alert('❌ Incorrect access code. Try again.');
         }
     });
 
@@ -467,7 +519,7 @@ function setupAdminConsole() {
         }
     });
 
-    // Add product to Flask API
+    // Add product
     addProductForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = newProdName.value.trim();
@@ -481,25 +533,34 @@ function setupAdminConsole() {
             return;
         }
 
+        const newProd = {
+            id: `prod-${Date.now()}`,
+            name, category, price, pic: picUrl, comment
+        };
+
         try {
-            const newProd = await apiPost('/api/products', {
-                name, category, price, pic: picUrl, comment
+            await fetch('/api/products', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newProd)
             });
-            products.push(newProd);
-            renderCatalog(getActiveCategory(), searchInput.value);
-
-            // Reset form
-            newProdName.value = '';
-            newProdPrice.value = '';
-            newProdPic.value = '';
-            newProdFile.value = '';
-            newProdComment.value = '';
-            uploadedImageBase64 = '';
-
-            alert('✅ Product added to the storefront!');
-        } catch {
-            alert('❌ Failed to add product.');
+        } catch (err) {
+            console.log('Using local add product fallback');
         }
+
+        products.push(newProd);
+        saveLocalProducts();
+        renderCatalog(getActiveCategory(), searchInput.value);
+
+        // Reset form
+        newProdName.value = '';
+        newProdPrice.value = '';
+        newProdPic.value = '';
+        newProdFile.value = '';
+        newProdComment.value = '';
+        uploadedImageBase64 = '';
+
+        alert('✅ Product added to the storefront!');
     });
 
     // Discount slider preview
@@ -507,23 +568,31 @@ function setupAdminConsole() {
         discountRateVal.textContent = `${storeDiscountRate.value}% OFF`;
     });
 
-    // Save settings to Flask API
+    // Save settings
     saveSettingsBtn.addEventListener('click', async () => {
         discountRate = parseInt(storeDiscountRate.value);
         discountBannerMsg = storeDiscountBanner.value.trim();
 
         try {
-            await apiPost('/api/settings', {
-                discount_rate: discountRate,
-                discount_banner: discountBannerMsg
+            await fetch('/api/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    discount_rate: discountRate,
+                    discount_banner: discountBannerMsg
+                })
             });
-            updatePromoBanner();
-            renderCatalog(getActiveCategory(), searchInput.value);
-            updateCartUI();
-            alert('✅ Store settings saved!');
-        } catch {
-            alert('❌ Failed to save settings.');
+        } catch (err) {
+            console.log('Using local settings save fallback');
         }
+
+        localStorage.setItem('jajy_discount_rate', discountRate);
+        localStorage.setItem('jajy_discount_banner', discountBannerMsg);
+
+        updatePromoBanner();
+        renderCatalog(getActiveCategory(), searchInput.value);
+        updateCartUI();
+        alert('✅ Store settings saved!');
     });
 }
 
@@ -539,18 +608,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         setTimeout(() => { portalScreen.style.display = 'none'; }, 1200);
     });
 
-    // Category filters with Generative UI Adaptation
+    // Category filters
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            const category = btn.getAttribute('data-category');
-            if (category === 'all') {
-                document.body.removeAttribute('data-theme');
-            } else {
-                document.body.setAttribute('data-theme', category);
-            }
-            renderCatalog(category, searchInput.value);
+            renderCatalog(btn.getAttribute('data-category'), searchInput.value);
         });
     });
 
@@ -586,6 +649,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Admin console setup
     setupAdminConsole();
 
-    // Load data from Flask server
+    // Load store data
     await loadStoreData();
 });
