@@ -8,7 +8,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;900&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;900&family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
@@ -277,7 +277,25 @@
             </div>
         </div>
 
-    </div>
+    <!-- Firebase Web SDK & Analytics -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyCKRtiu8nlPrRcqb3uimngw3FRSe0wnEtM",
+          authDomain: "varahi-store.firebaseapp.com",
+          projectId: "varahi-store",
+          storageBucket: "varahi-store.firebasestorage.app",
+          messagingSenderId: "714898781731",
+          appId: "1:714898781731:web:71bb955317f9e234ce6396",
+          measurementId: "G-NZXWGGMHHD"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        console.log("🔥 Firebase Analytics Initialized for JAJY JAYA VARAHI Store");
+    </script>
 
     <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
