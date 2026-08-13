@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAJY JAYA VARAHI // Toys, Kitchen Ware & Return Gifts</title>
+    <meta name="description" content="Experience the magic of toys, premium kitchen ware, and custom return gifts in an immersive new shopping world.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;900&family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="portal-active">
+
+    <!-- Interactive Background Canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- World Entrance Portal Screen -->
+    <div class="portal-world" id="portal-screen">
+        <div class="portal-content">
+            <div class="portal-glow-ring"></div>
+            <div class="portal-badge">ESTD 2026</div>
+            <h1 class="portal-title">Jajy Jaya Varahi</h1>
+            <p class="portal-subtitle">TOYS // KITCHEN WARE // RETURN GIFTS</p>
+            <p class="portal-hint">A new dimension of shopping awaits. Click below to enter.</p>
+            <button id="enter-world-btn" class="portal-btn">
+                <span>ENTER THE WORLD</span>
+                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Storefront Page (Hidden initially by CSS/JS transition) -->
+    <div class="storefront-world" id="storefront-screen">
+        
+        <!-- Daily Discount Promo Banner -->
+        <div class="discount-banner" id="discount-promo-banner" style="display: none;">
+            <div class="banner-track">
+                <span id="discount-banner-text">🔥 SPECIAL DAILY MATRIX OFFER: 15% OFF ALL ARTIFACTS TODAY! 🔥</span>
+            </div>
+        </div>
+
+        <!-- Header Navigation -->
+        <header class="navbar">
+            <div class="nav-container">
+                <a href="#" class="logo">
+                    <img src="https://jayajayavarahigifts.in/wp-content/uploads/2026/05/jaya-logo.png" alt="JAJY JAYA VARAHI Logo" class="logo-img" style="max-height: 50px; display: block;">
+                </a>
+                
+                <nav class="nav-links">
+                    <a href="#catalog" class="active"><i class="fa-solid fa-shop"></i> Storefront</a>
+                    <a href="#" id="admin-login-btn"><i class="fa-solid fa-user-gear"></i> Owner Console</a>
+                </nav>
+
+                <div class="nav-actions">
+                    <div class="search-bar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="search-input" placeholder="Find items...">
+                    </div>
+                    <button id="cart-toggle-btn" class="cart-btn">
+                        <i class="fa-solid fa-basket-shopping"></i>
+                        <span class="cart-badge">0</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Hero / Store Header -->
+            <section class="hero-section">
+                <div class="hero-content">
+                    <div class="store-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> NOW OPEN IN 3D WORLD</div>
+                    <h1>Toys, Kitchen Ware & Return Gifts</h1>
+                    <p>Step into a carefully curated universe of high-quality products. Filter by our three main sections below.</p>
+                </div>
+            </section>
+
+            <!-- Store Catalog Section -->
+            <section id="catalog" class="catalog-section">
+                <div class="section-header">
+                    <h2><i class="fa-solid fa-boxes-stacked"></i> Explore Collection</h2>
+                    <div class="filter-controls">
+                        <button class="filter-btn active" data-category="all">All Items</button>
+                        <button class="filter-btn" data-category="toys"><i class="fa-solid fa-gamepad"></i> Toys</button>
+                        <button class="filter-btn" data-category="kitchenware"><i class="fa-solid fa-kitchen-set"></i> Kitchen Ware</button>
+                        <button class="filter-btn" data-category="return-gifts"><i class="fa-solid fa-gift"></i> Return Gifts</button>
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="products-grid" id="products-container">
+                    <!-- Products dynamically inserted via JS -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Store Footer containing Location & Timings -->
+        <footer class="store-footer">
+            <div class="footer-container">
+                <div class="footer-section address-info">
+                    <h3><i class="fa-solid fa-map-location-dot"></i> Visit Our Store</h3>
+                    <p>Experience our products in person at our physical shop in Boduppal or chat with us online.</p>
+                    <div class="footer-buttons">
+                        <a href="https://www.google.com/maps/place/Jaya+Jaya+Varahi+Gifts-Boduppal/@17.4133882,78.5945296,17z/data=!3m1!4b1!4m6!3m5!1s0x3bcb9f0037de2275:0x20f4ee54d5b56648!8m2!3d17.4133882!4d78.5971045!16s%2Fg%2F11yq2jljg4?entry=ttu&g_ep=EgoyMDI2MDcxOS4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="address-link-btn">
+                            <i class="fa-solid fa-route"></i>
+                            <span>Jaya Jaya Varahi Gifts, Boduppal, Hyderabad, Telangana 500092</span>
+                        </a>
+                        <a href="https://wa.me/917569304410" target="_blank" class="whatsapp-btn-link">
+                            <i class="fa-brands fa-whatsapp"></i>
+                            <span>Chat on WhatsApp: +91 75693 04410</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-section timing-info">
+                    <h3><i class="fa-solid fa-clock"></i> Store Timings</h3>
+                    <div class="timing-grid">
+                        <div class="timing-row">
+                            <span class="day">Mon - Wed</span>
+                            <span class="hours">10:00 - 21:00</span>
+                        </div>
+                        <div class="timing-row">
+                            <span class="day">Thu - Fri</span>
+                            <span class="hours">10:00 - 21:00</span>
+                        </div>
+                        <div class="timing-row">
+                            <span class="day">Sat - Sun</span>
+                            <span class="hours">09:00 - 22:00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 JAJY JAYA VARAHI TOYS, KITCHEN WARE & RETURN GIFTS. All rights reserved.</p>
+            </div>
+        </footer>
+
+        <!-- Slide-out Cart Drawer -->
+        <div class="cart-drawer" id="cart-drawer">
+            <div class="cart-header">
+                <h3><i class="fa-solid fa-basket-shopping"></i> Shopping Basket</h3>
+                <button id="cart-close-btn" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="cart-items" id="cart-items-container">
+                <!-- Cart items inserted dynamically -->
+                <div class="empty-cart-message">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <p>Your basket is empty.</p>
+                </div>
+            </div>
+
+            <div class="cart-footer">
+                <div class="cart-summary-row">
+                    <span>Subtotal:</span>
+                    <span id="cart-subtotal">₹0</span>
+                </div>
+                <div class="cart-summary-row" id="discount-summary-row" style="display: none;">
+                    <span>Discount Applied:</span>
+                    <span id="cart-discount" style="color: var(--secondary);">-₹0</span>
+                </div>
+                <div class="cart-summary-row total">
+                    <span>Total Cost:</span>
+                    <span id="cart-total">₹0</span>
+                </div>
+                <button id="checkout-btn" class="btn btn-primary btn-block">Place Order</button>
+            </div>
+        </div>
+
+        <!-- Slide-out Admin Drawer -->
+        <div class="admin-drawer" id="admin-drawer">
+            <div class="admin-header">
+                <h3><i class="fa-solid fa-user-shield"></i> Owner Console</h3>
+                <button id="admin-close-btn" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <!-- Auth Form -->
+            <div class="admin-auth" id="admin-auth-section">
+                <p>Enter the security key to configure store inventory & special discounts.</p>
+                <div class="control-group">
+                    <label for="admin-passcode">Access Passcode</label>
+                    <input type="password" id="admin-passcode" placeholder="Enter code...">
+                </div>
+                <button id="submit-auth-btn" class="btn btn-primary btn-block">Authenticate</button>
+
+            </div>
+
+            <!-- Admin Actions Form -->
+            <div class="admin-controls" id="admin-controls-section" style="display: none;">
+                <div class="admin-tabs">
+                    <button class="admin-tab-btn active" data-tab="tab-add">Add Product</button>
+                    <button class="admin-tab-btn" data-tab="tab-discount">Discount & Settings</button>
+                </div>
+
+                <!-- Tab 1: Add Product -->
+                <div class="admin-tab-content active" id="tab-add">
+                    <form id="add-product-form" onsubmit="return false;">
+                        <div class="control-group">
+                            <label for="new-prod-name">Product Name *</label>
+                            <input type="text" id="new-prod-name" required placeholder="e.g., Ceramic Non-stick Pan">
+                        </div>
+
+                        <div class="control-group">
+                            <label for="new-prod-category">Category *</label>
+                            <select id="new-prod-category" required>
+                                <option value="toys">Toys</option>
+                                <option value="kitchenware">Kitchen Ware</option>
+                                <option value="return-gifts">Return Gifts</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="new-prod-price">Price (₹) *</label>
+                            <input type="number" id="new-prod-price" min="0" required placeholder="e.g., 850">
+                        </div>
+
+                        <div class="control-group">
+                            <label for="new-prod-pic">Picture URL or File *</label>
+                            <input type="text" id="new-prod-pic" placeholder="Paste image URL...">
+                            <div class="file-input-wrapper">
+                                <span>or upload from device:</span>
+                                <input type="file" id="new-prod-file" accept="image/*">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="new-prod-comment">Description/Comment (Optional)</label>
+                            <textarea id="new-prod-comment" rows="3" placeholder="Additional details, size, colors..."></textarea>
+                        </div>
+
+                        <button type="submit" id="add-product-btn" class="btn btn-primary btn-block">
+                            <i class="fa-solid fa-circle-plus"></i> Launch Product
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Tab 2: Discounts -->
+                <div class="admin-tab-content" id="tab-discount">
+                    <h3>Configure Discount Offer</h3>
+                    <p class="control-desc">Apply a daily percentage markdown across the entire store catalogue.</p>
+                    
+                    <div class="control-group">
+                        <label for="store-discount-rate">Daily Discount Rate (%)</label>
+                        <div class="range-slider-container">
+                            <input type="range" id="store-discount-rate" min="0" max="90" value="0">
+                            <span id="discount-rate-val">0% OFF</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="store-discount-banner">Promo Banner Message</label>
+                        <input type="text" id="store-discount-banner" placeholder="e.g., FESTIVE DHAMAKA: 15% OFF ALL ITEMS!">
+                    </div>
+
+                    <button id="save-settings-btn" class="btn btn-primary btn-block">
+                        <i class="fa-solid fa-floppy-disk"></i> Apply & Sync Storefront
+                    </button>
+                </div>
+
+                <div class="admin-logout-wrapper">
+                    <button id="admin-logout-btn" class="btn btn-secondary btn-block">Exit Console</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Details / Custom View Modal -->
+        <div class="modal" id="product-modal">
+            <div class="modal-overlay" id="modal-overlay"></div>
+            <div class="modal-content glass-card">
+                <button id="modal-close-btn" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+                <div class="modal-body" id="modal-body-content">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </div>
+
+    <!-- Firebase Web SDK & Analytics -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyCKRtiu8nlPrRcqb3uimngw3FRSe0wnEtM",
+          authDomain: "varahi-store.firebaseapp.com",
+          projectId: "varahi-store",
+          storageBucket: "varahi-store.firebasestorage.app",
+          messagingSenderId: "714898781731",
+          appId: "1:714898781731:web:71bb955317f9e234ce6396",
+          measurementId: "G-NZXWGGMHHD"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        console.log("🔥 Firebase Analytics Initialized for JAJY JAYA VARAHI Store");
+    </script>
+
+    <script src="app.js"></script>
+</body>
+</html>
