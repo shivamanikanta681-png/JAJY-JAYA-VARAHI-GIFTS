@@ -453,11 +453,11 @@ function openProductDetailModal(prod) {
 // ==========================================
 function setupAdminConsole() {
     // Auth submit
-    submitAuthBtn.addEventListener('click', async () => {
-        const code = adminPasscode.value.trim();
+    const handleAuth = async () => {
+        const code = adminPasscode.value.trim().toLowerCase();
         
-        // Direct Passcode Check (Works on Vercel static & Flask)
-        if (code === 'admin123') {
+        // Direct Passcode Check (Case insensitive: admin123, admin, 1234)
+        if (code === 'admin123' || code === 'admin' || code === '1234') {
             isAdmin = true;
             adminAuthSection.style.display = 'none';
             adminControlsSection.style.display = 'block';
@@ -480,11 +480,16 @@ function setupAdminConsole() {
                 adminPasscode.value = '';
                 renderCatalog(getActiveCategory(), searchInput.value);
             } else {
-                alert('❌ Incorrect access code. Try again.');
+                alert('❌ Incorrect access code. Passcode is: admin123');
             }
         } catch {
-            alert('❌ Incorrect access code. Try again.');
+            alert('❌ Incorrect access code. Passcode is: admin123');
         }
+    };
+
+    submitAuthBtn.addEventListener('click', handleAuth);
+    adminPasscode.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') handleAuth();
     });
 
     // Logout
