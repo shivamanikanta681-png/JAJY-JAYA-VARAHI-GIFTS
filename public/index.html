@@ -52,6 +52,7 @@
                 
                 <nav class="nav-links">
                     <a href="#catalog" class="active"><i class="fa-solid fa-shop"></i> Storefront</a>
+                    <a href="#" id="my-bookings-btn"><i class="fa-solid fa-receipt"></i> My Bookings</a>
                     <a href="#" id="admin-login-btn"><i class="fa-solid fa-user-gear"></i> Owner Console</a>
                 </nav>
 
@@ -170,6 +171,18 @@
             </div>
         </div>
 
+        <!-- Slide-out Customer "My Bookings" Drawer -->
+        <div class="cart-drawer" id="my-bookings-drawer" style="width: 520px; right: -520px;">
+            <div class="cart-header">
+                <h3><i class="fa-solid fa-receipt"></i> My Bookings</h3>
+                <button id="my-bookings-close-btn" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="cart-items" id="my-bookings-list-container">
+                <!-- Loaded dynamically from Firestore -->
+            </div>
+        </div>
+
         <!-- Slide-out Admin Drawer -->
         <div class="admin-drawer" id="admin-drawer">
             <div class="admin-header">
@@ -185,14 +198,14 @@
                     <input type="password" id="admin-passcode" placeholder="Enter code...">
                 </div>
                 <button id="submit-auth-btn" class="btn btn-primary btn-block">Authenticate</button>
-
             </div>
 
             <!-- Admin Actions Form -->
             <div class="admin-controls" id="admin-controls-section" style="display: none;">
                 <div class="admin-tabs">
                     <button class="admin-tab-btn active" data-tab="tab-add">Add Product</button>
-                    <button class="admin-tab-btn" data-tab="tab-discount">Discount & Settings</button>
+                    <button class="admin-tab-btn" data-tab="tab-discount">Settings</button>
+                    <button class="admin-tab-btn" data-tab="tab-bookings"><i class="fa-solid fa-list-check"></i> Bookings</button>
                 </div>
 
                 <!-- Tab 1: Add Product -->
@@ -260,13 +273,22 @@
                     </button>
                 </div>
 
+                <!-- Tab 3: Owner Console Customer Bookings -->
+                <div class="admin-tab-content" id="tab-bookings">
+                    <h3>Customer Orders & Bookings</h3>
+                    <p class="control-desc">Manage live customer orders, update delivery status, and review details.</p>
+                    <div id="owner-bookings-list-container">
+                        <!-- Loaded dynamically from Firestore -->
+                    </div>
+                </div>
+
                 <div class="admin-logout-wrapper">
                     <button id="admin-logout-btn" class="btn btn-secondary btn-block">Exit Console</button>
                 </div>
             </div>
         </div>
 
-        <!-- Product Details / Custom View Modal -->
+        <!-- Product Details Modal -->
         <div class="modal" id="product-modal">
             <div class="modal-overlay" id="modal-overlay"></div>
             <div class="modal-content glass-card">
@@ -277,26 +299,110 @@
             </div>
         </div>
 
-    <!-- Firebase Web SDK & Analytics -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+        <!-- Customer Details Checkout Modal -->
+        <div class="modal" id="checkout-modal">
+            <div class="modal-overlay" id="checkout-overlay"></div>
+            <div class="modal-content glass-card" style="max-width: 540px;">
+                <button id="checkout-modal-close-btn" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+                <div class="checkout-form-header" style="margin-bottom: 1.5rem;">
+                    <h3 style="font-family: var(--font-display); color: #fff; font-size: 1.4rem; display: flex; align-items: center; gap: 0.6rem;">
+                        <i class="fa-solid fa-truck-fast" style="color: var(--primary);"></i> Delivery & Contact Details
+                    </h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.3rem;">Please complete your information to confirm the booking.</p>
+                </div>
+                
+                <form id="checkout-details-form" onsubmit="return false;">
+                    <div class="control-group">
+                        <label for="cust-name">Full Name *</label>
+                        <input type="text" id="cust-name" required placeholder="e.g. Rahul Sharma">
+                    </div>
 
-        const firebaseConfig = {
-          apiKey: "AIzaSyCKRtiu8nlPrRcqb3uimngw3FRSe0wnEtM",
-          authDomain: "varahi-store.firebaseapp.com",
-          projectId: "varahi-store",
-          storageBucket: "varahi-store.firebasestorage.app",
-          messagingSenderId: "714898781731",
-          appId: "1:714898781731:web:71bb955317f9e234ce6396",
-          measurementId: "G-NZXWGGMHHD"
-        };
+                    <div class="form-row-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="control-group">
+                            <label for="cust-phone">Phone Number *</label>
+                            <input type="tel" id="cust-phone" required placeholder="e.g. 9876543210">
+                        </div>
+                        <div class="control-group">
+                            <label for="cust-email">Email (Optional)</label>
+                            <input type="email" id="cust-email" placeholder="e.g. rahul@example.com">
+                        </div>
+                    </div>
 
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        console.log("🔥 Firebase Analytics Initialized for JAJY JAYA VARAHI Store");
-    </script>
+                    <div class="control-group">
+                        <label for="cust-address">Delivery Address *</label>
+                        <textarea id="cust-address" rows="2" required placeholder="House/Flat No., Street Name, Area..."></textarea>
+                    </div>
 
-    <script src="app.js"></script>
+                    <div class="form-row-3" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem;">
+                        <div class="control-group">
+                            <label for="cust-city">City *</label>
+                            <input type="text" id="cust-city" required placeholder="Hyderabad">
+                        </div>
+                        <div class="control-group">
+                            <label for="cust-state">State *</label>
+                            <input type="text" id="cust-state" required placeholder="Telangana">
+                        </div>
+                        <div class="control-group">
+                            <label for="cust-pincode">Pincode *</label>
+                            <input type="text" id="cust-pincode" required placeholder="500092">
+                        </div>
+                    </div>
+
+                    <div class="checkout-summary-mini" style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 1.5rem;">
+                        <span style="color: var(--text-muted);">Total Payable:</span>
+                        <strong id="checkout-modal-total" style="font-size: 1.4rem; color: var(--primary); font-family: var(--font-sans);">₹0</strong>
+                    </div>
+
+                    <button type="submit" id="confirm-booking-btn" class="btn btn-primary btn-block">
+                        <i class="fa-solid fa-check-circle"></i> Confirm & Book Order
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Booking Success Confirmation Popup Modal -->
+        <div class="modal" id="booking-success-modal">
+            <div class="modal-overlay" id="success-overlay"></div>
+            <div class="modal-content glass-card" style="max-width: 480px; text-align: center; padding: 2.5rem;">
+                <div class="success-icon-wrapper" style="font-size: 4rem; color: #25d366; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h2 style="color: #fff; font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 0.4rem;">Booking Successful</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">Your order has been recorded in our store matrix.</p>
+                
+                <div class="booking-id-box" style="background: rgba(255, 179, 0, 0.08); border: 1px dashed var(--primary); padding: 1rem; border-radius: 8px; margin-bottom: 1.8rem;">
+                    <span style="font-size: 0.8rem; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase;">Booking Reference ID</span>
+                    <h3 id="success-booking-id" style="color: var(--primary); font-family: var(--font-sans); font-weight: 800; letter-spacing: 1.5px; font-size: 1.4rem; margin-top: 4px;">JV-XXXXXX</h3>
+                </div>
+                
+                <div class="success-actions" style="display: flex; flex-direction: column; gap: 0.8rem;">
+                    <button id="success-view-booking-btn" class="btn btn-primary btn-block">
+                        <i class="fa-solid fa-eye"></i> View Booking Details
+                    </button>
+                    <button id="success-my-bookings-btn" class="btn btn-secondary btn-block">
+                        <i class="fa-solid fa-receipt"></i> Go to My Bookings
+                    </button>
+                    <button id="success-continue-btn" class="btn btn-secondary btn-block" style="border-color: transparent; color: var(--text-muted);">
+                        Continue Shopping
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Single Booking Details View Modal -->
+        <div class="modal" id="booking-details-modal">
+            <div class="modal-overlay" id="booking-details-overlay"></div>
+            <div class="modal-content glass-card" style="max-width: 650px; max-height: 90vh; overflow-y: auto;">
+                <button id="booking-details-close-btn" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+                <div id="booking-details-content">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Firebase CDN Web SDKs -->
+    <script type="module" src="app.js"></script>
 </body>
 </html>

@@ -1322,6 +1322,131 @@ body:not(.portal-active) .portal-world {
 }
 
 /* ==========================================================
+   BOOKINGS & STATUS BADGES
+   ========================================================== */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.status-booked {
+    background: rgba(255, 179, 0, 0.12);
+    color: #ffb300;
+    border: 1px solid rgba(255, 179, 0, 0.3);
+}
+
+.status-badge.status-confirmed {
+    background: rgba(0, 150, 255, 0.12);
+    color: #0096ff;
+    border: 1px solid rgba(0, 150, 255, 0.3);
+}
+
+.status-badge.status-packed {
+    background: rgba(186, 0, 255, 0.12);
+    color: #ba00ff;
+    border: 1px solid rgba(186, 0, 255, 0.3);
+}
+
+.status-badge.status-shipped {
+    background: rgba(0, 243, 255, 0.12);
+    color: #00f3ff;
+    border: 1px solid rgba(0, 243, 255, 0.3);
+}
+
+.status-badge.status-delivered {
+    background: rgba(37, 211, 102, 0.12);
+    color: #25d366;
+    border: 1px solid rgba(37, 211, 102, 0.3);
+}
+
+.status-badge.status-cancelled {
+    background: rgba(255, 50, 50, 0.12);
+    color: #ff3232;
+    border: 1px solid rgba(255, 50, 50, 0.3);
+}
+
+.booking-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.booking-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 20px rgba(255, 179, 0, 0.1);
+}
+
+.booking-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+    padding-bottom: 0.6rem;
+}
+
+.booking-ref-id {
+    font-weight: 800;
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: 1.05rem;
+}
+
+.booking-date-text {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.booking-items-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    color: var(--text-main);
+}
+
+.booking-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    padding-top: 0.6rem;
+}
+
+.booking-total-price {
+    font-weight: 800;
+    color: var(--primary);
+    font-size: 1.15rem;
+}
+
+.owner-status-select {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.owner-status-select option {
+    background: #09090e;
+    color: #fff;
+}
+
+/* ==========================================================
    RESPONSIVENESS
    ========================================================== */
 @media (max-width: 992px) {

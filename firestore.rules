@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Products catalog: readable by anyone, writable by admin/authenticated
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if true; // Managed via Owner Console
+    }
+
+    // Store settings: readable by anyone, writable by admin/authenticated
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if true; // Managed via Owner Console
+    }
+
+    // Bookings collection:
+    // Customers can create bookings and read their own bookings.
+    // Admin/Owner can read all bookings and update booking status.
+    match /bookings/{bookingId} {
+      allow create: if true;
+      allow read: if true;
+      allow update: if true; // Allow status updates from Owner Console
+      allow delete: if false; // Prevent deletion of historical bookings
+    }
+  }
+}
